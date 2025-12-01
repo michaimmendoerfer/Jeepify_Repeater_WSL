@@ -70,12 +70,8 @@ void setup()
     
     if (_LED_SIGNAL) pinMode(LED_PIN, OUTPUT);
     
-   Serial.begin(74880);
-    if (DEBUG_LEVEL > 0)
-    {
-        Serial.begin(74880);
-        delay(1000);
-    }
+    Serial.begin(115200);
+    
     Serial.println("Serial online");
     esp_sleep_wakeup_cause_t wakeup_reason = esp_sleep_get_wakeup_cause();
     
