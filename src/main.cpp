@@ -5,13 +5,14 @@
 #include <ArduinoJson.h>
 #include <LinkedList.h>
 
+
 #define LED_PIN 8
 #define LED_OFF 0
 #define LED_ON  1
 
 
 const int DEBUG_LEVEL = 3; 
-const int _LED_SIGNAL = 1;
+const int _LED_SIGNAL = 0;
 
 #define WAIT_ALIVE       15000
 #define WAIT_AFTER_SLEEP 2000
@@ -60,17 +61,20 @@ void GoToSleep()
 }
 void setup()
 {
-    delay(3000);
     if (DEBUG_LEVEL > 0)
     {
         #ifdef ARDUINO_USB_CDC_ON_BOOT
             //delay(3000);
         #endif
     }
-    pinMode(LED_PIN, OUTPUT);
+    
+    if (_LED_SIGNAL) pinMode(LED_PIN, OUTPUT);
+    
+   Serial.begin(74880);
     if (DEBUG_LEVEL > 0)
     {
-        Serial.begin(115200);
+        Serial.begin(74880);
+        delay(1000);
     }
     Serial.println("Serial online");
     esp_sleep_wakeup_cause_t wakeup_reason = esp_sleep_get_wakeup_cause();
@@ -114,7 +118,7 @@ void setup()
         {
             Serial.println("Broadcast added...");
         }
-    
+
     Serial.println("Repeater online...");
 }
 #pragma region System-Things
@@ -267,6 +271,7 @@ void OnDataRecv(const esp_now_recv_info *info, const uint8_t* incomingData, int 
         {
             LastContact = millis();
             Serial.printf("Letzter Kontakt:%lu\n\r", LastContact);
+            WaitForContact = WAIT_ALIVE; 
         }
 
         _TTL--;
